@@ -1,0 +1,14 @@
+Tencent HY is licensed under the Tencent HY Community License Agreement, Copyright © 2025 Tencent. All Rights Reserved. The trademark rights of "Tencent HY" are owned by Tencent or its affiliate.
+
+The hymt_* files in this repository's releases are MODIFIED files derived from
+Tencent HY-MT1.5-1.8B (via the INT8 export in niedev/OnnxModelsEnhancer):
+graph surgery and Qualcomm QNN HTP compilation by the OnSpeak47 project.
+Use is subject to the use restrictions in Sections 5(a) and 5(b) of the
+Tencent HY Community License Agreement (LICENSE-HY-MT.txt), and is not
+licensed in the European Union, the United Kingdom or South Korea.
+
+The zipformer_* files are MODIFIED files derived from
+lmcu000 sherpa-onnx streaming Zipformer zh-en-vi (stage 2e), licensed
+CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/):
+static-shape export and Qualcomm QNN HTP compilation by the OnSpeak47
+project; redistributed under the same license, non-commercial use only.

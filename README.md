@@ -1,0 +1,53 @@
+# OnSpeak47 NPU models
+
+Qualcomm Hexagon NPU (QNN HTP) builds of the on-device models used by
+[OnSpeak47](https://github.com/DS-PNQ/OnSpeak47) — offline VI ⇄ EN ⇄ ZH
+speech translation. Weights live in [Releases](../../releases), not in git.
+
+All files are **ONNX EPContext models**: precompiled QNN context binaries
+wrapped in ONNX, loaded by ONNX Runtime ≥ 1.24 with Qualcomm's QNN plugin
+EP. They are SoC-specific.
+
+| SoC | Phone class | HTP | Zipformer ASR | HY-MT 1.5 1.8B |
+|---|---|---|---|---|
+| `sm8850` | Snapdragon 8 Elite Gen 5 | v81 | yes | yes |
+| `sm8750` | Snapdragon 8 Elite | v79 | yes | — |
+| `sm8650` | Snapdragon 8 Gen 3 | v75 | yes | — |
+
+Built with QAIRT **2.51** (`onnxruntime-qnn` 2.7.0). Load them with
+`com.qualcomm.qti:onnxruntime-android-qnn:2.7.0` +
+`com.qualcomm.qti:qnn-runtime:2.51.0` (or newer runtime).
+
+## Files
+
+**Zipformer 2e streaming transducer** (vi/en/zh, FP16 on HTP, 100 % of nodes
+on the NPU): `zipformer_{encoder,decoder,joiner}.<soc>.ctx.onnx`.
+Encoder input `x [1,39,80]` Kaldi fbank + 35 cache tensors (batch fixed to 1).
+Use the `tokens.txt` of the source model.
+
+**HY-MT 1.5 1.8B** (INT8 block-128 weights kept from the source export,
+FP16 activations, prefill + decode graphs sharing one weight copy):
+`hymt_ar64.sm8850.ctx.onnx` + `hymt_ar1.sm8850.ctx.onnx` (embedding lookup on
+CPU, everything else one NPU partition each) and the shared context binary
+`hymt_ar64.sm8850.ctx_qnn.bin` (1.88 GB) they both reference. Keep all three
+in one folder; load both sessions with `ep.share_ep_contexts=1`.
+
+Graph I/O (cache length 1024, AR = 64 or 1): `input_ids [1,AR]`,
+`attention_mask [1,1024]`, `position_ids [1,AR]`,
+`past_key_values.{0..31}.{key,value}` fp16 `[1,4,1024-AR,128]` →
+`next_ids [1,AR]` (greedy argmax), `new.{i}.{key,value}` fp16 `[1,4,AR,128]`.
+The caller owns the cache; see `backend/translation_hymt_npu.py` in the app
+repo for the reference loop.
+
+## Reproduce
+
+In the app repo: `optimize/16_qnn_compile.py zipformer --soc all` and
+`optimize/16_qnn_compile.py hymt`. Research notes and verification status:
+`docs/qualcomm_npu.md`.
+
+## Licenses
+
+- HY-MT files: Tencent HY Community License — see `LICENSE-HY-MT.txt` and
+  `NOTICE`. **Not licensed in the EU, UK or South Korea.**
+- Zipformer files: CC BY-NC-SA 4.0 (non-commercial, share-alike), from
+  [lmcu000's zh-en-vi stage-2e model](https://huggingface.co/lmcu000/zipformer-streaming-zh-en-vi-2e).
