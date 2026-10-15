@@ -31,6 +31,9 @@ FP16 activations, prefill + decode graphs sharing one weight copy):
 CPU, everything else one NPU partition each) and the shared context binary
 `hymt_ar64.sm8850.ctx_qnn.bin` (1.88 GB) they both reference. Keep all three
 in one folder; load both sessions with `ep.share_ep_contexts=1`.
+**Use v1.0.1-npu or later**: v1.0.0's HY-MT binary kept the float32-min
+attention-mask fill, which the FP16 HTP can't represent, and decoded garbage
+on device.
 
 Graph I/O (cache length 1024, AR = 64 or 1): `input_ids [1,AR]`,
 `attention_mask [1,1024]`, `position_ids [1,AR]`,
