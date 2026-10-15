@@ -31,12 +31,13 @@ FP16 activations, prefill + decode graphs sharing one weight copy):
 CPU, everything else one NPU partition each) and the shared context binary
 `hymt_ar64.sm8850.ctx_qnn.bin` (1.88 GB) they both reference. Keep all three
 in one folder; load both sessions with `ep.share_ep_contexts=1`.
-**Use v1.0.2-npu or later** for HY-MT. Earlier HY-MT binaries decode garbage
+**Use v1.0.3-npu or later** for HY-MT. Earlier HY-MT binaries decode garbage
 on device: v1.0.0 kept the float32-min attention-mask fill (not representable
 in FP16); v1.0.1 fixed that, but QNN's RmsNorm on the K heads (HunYuan's
-`key_layernorm`) produced head 0 only, so every attention score was wrong.
-v1.0.2 computes the q/k norms with elementwise ops. Zipformer files are
-unchanged since v1.0.0.
+`key_layernorm`) produced head 0 only, so every attention score was wrong;
+v1.0.2 fixed the norms, but the HTP's `ArgMax` still flipped bit 16 of token
+ids above 65535 (EOS read as " goats"). v1.0.3 takes the argmax over two
+60409-wide halves. Zipformer files are unchanged since v1.0.0.
 
 Graph I/O (cache length 1024, AR = 64 or 1): `input_ids [1,AR]`,
 `attention_mask [1,1024]`, `position_ids [1,AR]`,
