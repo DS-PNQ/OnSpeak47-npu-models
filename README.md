@@ -37,7 +37,9 @@ in FP16); v1.0.1 fixed that, but QNN's RmsNorm on the K heads (HunYuan's
 `key_layernorm`) produced head 0 only, so every attention score was wrong;
 v1.0.2 fixed the norms, but the HTP's `ArgMax` still flipped bit 16 of token
 ids above 65535 (EOS read as " goats"). v1.0.3 takes the argmax over two
-60409-wide halves. Zipformer files are unchanged since v1.0.0.
+60409-wide halves. Zipformer files are unchanged since v1.0.0. v1.0.4 (app graph REV 5) compiles the
+decode graph over a 256-token cache instead of 1024, so every decode step moves
+less data; prompts that do not fit decode with the prefill graph.
 
 Graph I/O (cache length 1024, AR = 64 or 1): `input_ids [1,AR]`,
 `attention_mask [1,1024]`, `position_ids [1,AR]`,
