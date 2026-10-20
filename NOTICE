@@ -12,3 +12,8 @@ lmcu000 sherpa-onnx streaming Zipformer zh-en-vi (stage 2e), licensed
 CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/):
 static-shape export and Qualcomm QNN HTP compilation by the OnSpeak47
 project; redistributed under the same license, non-commercial use only.
+
+The hymt_* files in the v2.0.0-npu release are MODIFIED files derived from
+Tencent Hy-MT2-1.8B (Copyright (C) 2026 Tencent), licensed under the Apache
+License, Version 2.0 (LICENSE-HY-MT2.txt): INT8 ONNX export, graph surgery and
+Qualcomm QNN HTP compilation by the OnSpeak47 project.

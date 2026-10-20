@@ -48,6 +48,14 @@ Graph I/O (cache length 1024, AR = 64 or 1): `input_ids [1,AR]`,
 The caller owns the cache; see `backend/translation_hymt_npu.py` in the app
 repo for the reference loop.
 
+## Hy-MT2 (v2.0.0-npu)
+
+Release **v2.0.0-npu** carries the same three HY-MT files built from Tencent
+**Hy-MT2-1.8B** (Apache-2.0, same architecture and I/O as HY-MT 1.5; app graph
+**REV 6**, used by the `com.omnivoice.onspeak47.hymt2` app). The Zipformer
+files are byte-identical to v1.0.4. Do not mix HY-MT files from different
+releases. License: `LICENSE-HY-MT2.txt`.
+
 ## Reproduce
 
 In the app repo: `optimize/16_qnn_compile.py zipformer --soc all` and
