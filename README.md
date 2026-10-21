@@ -56,6 +56,14 @@ Release **v2.0.0-npu** carries the same three HY-MT files built from Tencent
 files are byte-identical to v1.0.4. Do not mix HY-MT files from different
 releases. License: `LICENSE-HY-MT2.txt`.
 
+**v2.0.1-npu** (app graph **REV 7**) runs Hy-MT2 entirely on the NPU: the
+embedding lookup is a quantized HTP Gather, so the `.ctx.onnx` wrappers are a
+single EPContext node each (no CPU table copy), and it adds
+`hymt_ar64_256.sm8850.ctx.onnx`, a 64-token prefill over a 256-slot cache for
+prompts that fit (cache I/O `[1,4,192,128]`, `attention_mask [1,256]`). Four
+HY-MT files: `hymt_ar64`, `hymt_ar64_256`, `hymt_ar1` wrappers + the shared
+`hymt_ar64.sm8850.ctx_qnn.bin` (2.14 GB).
+
 ## Reproduce
 
 In the app repo: `optimize/16_qnn_compile.py zipformer --soc all` and
