@@ -17,3 +17,9 @@ The hymt_* files in the v2.0.0-npu release are MODIFIED files derived from
 Tencent Hy-MT2-1.8B (Copyright (C) 2026 Tencent), licensed under the Apache
 License, Version 2.0 (LICENSE-HY-MT2.txt): INT8 ONNX export, graph surgery and
 Qualcomm QNN HTP compilation by the OnSpeak47 project.
+
+The hymt_* files in the v2.1.0-npu release are MODIFIED files derived from
+Tencent Hy-MT2-1.8B-1.25Bit-GGUF (Copyright (C) 2026 Tencent), licensed under
+the Apache License, Version 2.0 (LICENSE-HY-MT2-1.25Bit.txt): dequantization to
+ONNX (ternary weights repacked as 2-bit MatMulNBits), graph surgery and
+Qualcomm QNN HTP compilation by the OnSpeak47 project.

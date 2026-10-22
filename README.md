@@ -64,6 +64,19 @@ prompts that fit (cache I/O `[1,4,192,128]`, `attention_mask [1,256]`). Four
 HY-MT files: `hymt_ar64`, `hymt_ar64_256`, `hymt_ar1` wrappers + the shared
 `hymt_ar64.sm8850.ctx_qnn.bin` (2.14 GB).
 
+## Hy-MT2 1.25-bit (v2.1.0-npu)
+
+**v2.1.0-npu** (app graph **REV 8**, used by the `com.omnivoice.onspeak47.hymt125`
+app) carries the same four HY-MT files and I/O as v2.0.1, built from Tencent
+**Hy-MT2-1.8B-1.25Bit-GGUF** (AngelSlim ternary QAT, Apache-2.0). Its linear
+weights are ternary with one fp16 scale per 256 inputs, which is exactly a
+2-bit `MatMulNBits`; the HTP keeps them at 2 bits, so the shared
+`hymt_ar64.sm8850.ctx_qnn.bin` is 0.94 GB (v2.0.1: 2.14 GB). The tied
+embedding / LM head (Q6_K in the GGUF) is 8-bit. The conversion is exact
+(ONNX greedy output = the GGUF weights in fp32); translation quality is that
+of the 1.25-bit model, below the 8-bit Hy-MT2 of v2.0.1. Zipformer files are
+byte-identical to v2.0.1. License: `LICENSE-HY-MT2-1.25Bit.txt`.
+
 ## Reproduce
 
 In the app repo: `optimize/16_qnn_compile.py zipformer --soc all` and
