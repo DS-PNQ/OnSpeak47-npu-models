@@ -77,10 +77,30 @@ embedding / LM head (Q6_K in the GGUF) is 8-bit. The conversion is exact
 of the 1.25-bit model, below the 8-bit Hy-MT2 of v2.0.1. Zipformer files are
 byte-identical to v2.0.1. License: `LICENSE-HY-MT2-1.25Bit.txt`.
 
+## Qwen3-ASR code-switching ASR (v2.2.0-npu)
+
+**v2.2.0-npu** adds a second ASR (app graph **REV 1** of
+`QwenAsrNpuEngine`, `com.omnivoice.onspeak47.hymt125` app): **Qwen3-ASR-0.6B**
+with a vi/en/zh code-switching LoRA (merged at 0.5), vocabulary pruned to
+87,193 tokens, 8-bit weights, FP16 activations, sm8850 only. Five files, keep
+them in one folder: `qasr_enc.sm8850.ctx.onnx` (audio encoder, one 8 s block
+per run, 235 MB), `qasr_ar64.sm8850.ctx.onnx` + `qasr_ar1.sm8850.ctx.onnx`
+(decoder prefill / decode wrappers, load both with `ep.share_ep_contexts=1`)
+over `qasr_ar64.sm8850.ctx_qnn.bin` (570 MB), and `qasr_assets.bin` (CPU side:
+int8 embedding table, vocabulary bytes, mel filters; 91 MB).
+
+Graph I/O: encoder `mel [1,128,800]` + `mask [1,1,1,104]` -> `feats [1,104,1024]`;
+decoder `x [1,AR,1024]` (embeddings, audio rows in place), `pos [1,AR]`,
+`mask [AR,512+AR]`, `past_{k,v}_{0..27}` fp16 `[1,8,512,128]` -> `next_ids [1,AR]`
+(pruned-vocab argmax), `new_k`/`new_v` fp16 `[28,8,AR,128]`. Reference loop:
+`backend/streaming_asr/qwen3asr_npu.py` in the app repo. Files are independent
+of the HY-MT / Zipformer files of v2.1.0-npu (not repeated here).
+
 ## Reproduce
 
 In the app repo: `optimize/16_qnn_compile.py zipformer --soc all` and
-`optimize/16_qnn_compile.py hymt`. Research notes and verification status:
+`optimize/16_qnn_compile.py hymt`; Qwen3-ASR: `optimize/18_qwen3asr.py export` +
+`optimize/16_qnn_compile.py qwen3asr`. Research notes and verification status:
 `docs/qualcomm_npu.md`.
 
 ## Licenses
@@ -89,3 +109,4 @@ In the app repo: `optimize/16_qnn_compile.py zipformer --soc all` and
   `NOTICE`. **Not licensed in the EU, UK or South Korea.**
 - Zipformer files: CC BY-NC-SA 4.0 (non-commercial, share-alike), from
   [lmcu000's zh-en-vi stage-2e model](https://huggingface.co/lmcu000/zipformer-streaming-zh-en-vi-2e).
+- Qwen3-ASR files: Apache-2.0 — see `LICENSE-Qwen3-ASR.txt` and `NOTICE`.

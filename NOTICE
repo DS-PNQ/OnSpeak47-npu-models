@@ -23,3 +23,11 @@ Tencent Hy-MT2-1.8B-1.25Bit-GGUF (Copyright (C) 2026 Tencent), licensed under
 the Apache License, Version 2.0 (LICENSE-HY-MT2-1.25Bit.txt): dequantization to
 ONNX (ternary weights repacked as 2-bit MatMulNBits), graph surgery and
 Qualcomm QNN HTP compilation by the OnSpeak47 project.
+
+The qasr_* files in the v2.2.0-npu release are MODIFIED files derived from
+Qwen3-ASR-0.6B (Alibaba Cloud, Qwen team), licensed under the Apache License,
+Version 2.0 (LICENSE-Qwen3-ASR.txt): a LoRA fine-tune for vi/en/zh
+code-switching (merged at scale 0.5), vocabulary pruned to 87,193 tokens,
+8-bit weight-only quantization, ONNX export and Qualcomm QNN HTP compilation by
+the OnSpeak47 project. The fine-tune used Google FLEURS (CC BY 4.0) and
+tensorxt/ViMedCSS (CC BY 4.0) training audio and transcripts.
